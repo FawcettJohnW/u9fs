@@ -1,4 +1,5 @@
-#define	VERSION9P	"9P2000"
+// #define	VERSION9P	"9P2000"
+#define	VERSION9P	"9P2000.u"
 #define	MAXWELEM	16
 
 typedef
@@ -42,6 +43,8 @@ struct	Fcall
 
 	u32int	afid;		/* Tauth, Tattach */
 	Qid aqid;		/* Rauth */
+
+        u32int	n_uname;	/* Tattach, Terror, Tauth */
 } Fcall;
 
 
@@ -65,7 +68,14 @@ struct	Fcall
 
 /* STATFIXLEN includes leading 16-bit count */
 /* The count, however, excludes itself; total size is BIT16SZ+count */
-#define STATFIXLEN	(BIT16SZ+QIDSZ+5*BIT16SZ+4*BIT32SZ+1*BIT64SZ)	/* amount of fixed length data in a stat buffer */
+// #define STATFIXLEN	(BIT16SZ+QIDSZ+5*BIT16SZ+4*BIT32SZ+1*BIT64SZ)	/* amount of fixed length data in a stat buffer */
+
+// u16:  size, type
+// u32:  dev, mode, atime, mtime, n_uid, n_gid, n_muid
+// u64:  length
+// qid:  qid
+// str:  name, uid, gid, muid, extension (each str takes 1 16-bit number for size)
+#define STATFIXLEN	(BIT16SZ+QIDSZ+6*BIT16SZ+7*BIT32SZ+1*BIT64SZ)	/* amount of fixed length data in a stat buffer */
 
 #define	MAXMSG		10000	/* max header sans data */
 #define	NOTAG		~0U	/* Dummy tag */

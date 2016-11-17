@@ -4,16 +4,17 @@
 uint
 sizeD2M(Dir *d)
 {
-	char *sv[4];
+	char *sv[5];
 	int i, ns;
 
 	sv[0] = d->name;
 	sv[1] = d->uid;
 	sv[2] = d->gid;
 	sv[3] = d->muid;
+	sv[4] = d->extension;
 
 	ns = 0;
-	for(i = 0; i < 4; i++)
+	for(i = 0; i < 5; i++)
 		ns += strlen(sv[i]);
 
 	return STATFIXLEN + ns;
@@ -23,8 +24,8 @@ uint
 convD2M(Dir *d, uchar *buf, uint nbuf)
 {
 	uchar *p, *ebuf;
-	char *sv[4];
-	int i, ns, nsv[4], ss;
+	char *sv[5];
+	int i, ns, nsv[5], ss;
 
 	if(nbuf < BIT16SZ)
 		return 0;
@@ -36,9 +37,10 @@ convD2M(Dir *d, uchar *buf, uint nbuf)
 	sv[1] = d->uid;
 	sv[2] = d->gid;
 	sv[3] = d->muid;
+	sv[4] = d->extension;
 
 	ns = 0;
-	for(i = 0; i < 4; i++){
+	for(i = 0; i < 5; i++){
 		nsv[i] = strlen(sv[i]);
 		ns += nsv[i];
 	}
@@ -72,7 +74,7 @@ convD2M(Dir *d, uchar *buf, uint nbuf)
 	PBIT64(p, d->length);
 	p += BIT64SZ;
 
-	for(i = 0; i < 4; i++){
+	for(i = 0; i < 5; i++){
 		ns = nsv[i];
 		if(p + ns + BIT16SZ > ebuf)
 			return 0;
@@ -81,6 +83,21 @@ convD2M(Dir *d, uchar *buf, uint nbuf)
 		memmove(p, sv[i], ns);
 		p += ns;
 	}
+
+	PBIT32(p, d->n_uid);
+	p += BIT32SZ;
+	PBIT32(p, d->n_gid);
+	p += BIT32SZ;
+	PBIT32(p, d->n_muid);
+	p += BIT32SZ;
+
+/*
+        if (d->extension)
+        {
+            // Symlink name was allocated in fidstat() 
+            free(d->extension);
+        }
+*/
 
 	if(ss != p - buf)
 		return 0;

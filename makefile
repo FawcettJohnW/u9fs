@@ -17,7 +17,7 @@
 #CC=cc
 CFLAGS=-g -O -I.
 LD=cc
-LDFLAGS=
+LDFLAGS= 
 LDTAIL=
 DESTROOT=/usr/local
 

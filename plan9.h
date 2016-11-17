@@ -155,7 +155,10 @@ extern	int	fltconv(va_list*, Fconv*);
 #define QTAPPEND	0x40		/* type bit for append only files */
 #define QTEXCL		0x20		/* type bit for exclusive use files */
 #define QTMOUNT		0x10		/* type bit for mounted channel */
-#define QTAUTH		0x08
+#define QTAUTH		0x08		/* type bit for authentication files */
+#define QTTMP 		0x04		/* type bit for non backed-up files */
+#define QTSYMLINK 	0x02		/* type bit for symbolic link */
+#define QTLINK 		0x01		/* type bit for hard link */
 #define QTFILE		0x00		/* plain file */
 
 /* bits in Dir.mode */
@@ -166,6 +169,30 @@ extern	int	fltconv(va_list*, Fconv*);
 #define DMREAD		0x4		/* mode bit for read permission */
 #define DMWRITE		0x2		/* mode bit for write permission */
 #define DMEXEC		0x1		/* mode bit for execute permission */
+/* 9P2000.u extensions */
+#define P9_DMSYMLINK	0x02000000	/* mode bit for symbolic links */
+#define P9_DMLINK	0x01000000	/* mode bit for hard links */
+#define P9_DMDEVICE	0x00800000	/* mode bit for device special files */
+#define P9_DMNAMEDPIPE	0x00200000	/* mode bit for named pipes */
+#define P9_DMSOCKET	0x00100000	/* mode bit for domain sockets */
+#define P9_DMSETUID	0x00080000	/* mode bit for set UID */
+#define P9_DMSETGID	0x00040000	/* mode bit for set GID */
+#define P9_DMSETVTX	0x00010000	/* mode bit for sticky bit */
+
+/**
+ * struct p9_str - length prefixed string type
+ * @len: length of the string
+ * @str: the string
+ *
+ * The protocol uses length prefixed strings for all
+ * string data, so we replicate that for our internal
+ * string members.
+ */
+
+struct p9_str {
+        ushort len;
+        char *str;
+};
 
 typedef
 struct Qid
@@ -190,6 +217,10 @@ struct Dir {
 	char	*uid;	/* owner name */
 	char	*gid;	/* group name */
 	char	*muid;	/* last modifier name */
+	char	*extension;        /* 9p2000.u extensions */
+        ulong	n_uid;             /* 9p2000.u extensions */
+        ulong	n_gid;             /* 9p2000.u extensions */
+        ulong	n_muid;            /* 9p2000.u extensions */
 } Dir;
 
 long readn(int, void*, long);

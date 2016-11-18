@@ -199,10 +199,12 @@ fprint(2, "Case Twalk\n");
 		p += BIT16SZ;
 		if(f->nwname > MAXWELEM)
 			return 0;
+fprint(2, "Twalk request came in.  f->nwname = %d\n", f->nwname);
 		for(i=0; i<f->nwname; i++){
 			p = gstring(p, ep, &f->wname[i]);
 			if(p == nil)
 				break;
+fprint(2, "                        f->wname[%d] = %s\n", i, f->wname[i]);
 		}
 		break;
 
@@ -218,19 +220,19 @@ fprint(2, "Case Topen\n");
 
 	case Tcreate:
 fprint(2, "Case Tcreate\n");
-		if(p+BIT32SZ > ep)
+		if(p+BIT32SZ+BIT32SZ+BIT8SZ > ep)
 			return 0;
 		f->fid = GBIT32(p);
 		p += BIT32SZ;
 		p = gstring(p, ep, &f->name);
 		if(p == nil)
 			break;
-		if(p+BIT32SZ+BIT8SZ > ep)
-			return 0;
 		f->perm = GBIT32(p);
 		p += BIT32SZ;
 		f->mode = GBIT8(p);
 		p += BIT8SZ;
+		p = gstring(p, ep, &f->extension);
+fprint(2, "Attempting to create file %s, mode %o, permissions 0x%x\n", f->name, f->mode, f->perm);
 		break;
 
 	case Tread:
@@ -438,6 +440,8 @@ else
 fprint(2, "Returning 0 because p > ep\n");
 		return 0;
         }
+
+fprint(2, "size = %d\n", size);
 	if(ap+size == p)
         {
 fprint(2, "Returning size = %d\n", size);

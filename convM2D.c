@@ -29,7 +29,7 @@ uint
 convM2D(uchar *buf, uint nbuf, Dir *d, char *strs)
 {
 	uchar *p, *ebuf;
-	char *sv[4];
+	char *sv[5];
 	int i, ns;
 
 	p = buf;
@@ -60,7 +60,7 @@ convM2D(uchar *buf, uint nbuf, Dir *d, char *strs)
 	d->gid = nil;
 	d->muid = nil;
 
-	for(i = 0; i < 4; i++){
+	for(i = 0; i < 5; i++){
 		if(p + BIT16SZ > ebuf)
 			return 0;
 		ns = GBIT16(p);
@@ -81,12 +81,20 @@ convM2D(uchar *buf, uint nbuf, Dir *d, char *strs)
 		d->uid = sv[1];
 		d->gid = sv[2];
 		d->muid = sv[3];
+		d->extension = sv[4];
 	}else{
 		d->name = nullstring;
 		d->uid = nullstring;
 		d->gid = nullstring;
 		d->muid = nullstring;
+		d->extension = nullstring;
 	}
 	
+	d->n_uid = GBIT32(p);
+	p += BIT64SZ;
+	d->n_gid = GBIT32(p);
+	p += BIT64SZ;
+	d->n_muid = GBIT32(p);
+
 	return p - buf;
 }

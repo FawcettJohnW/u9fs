@@ -75,10 +75,11 @@ sizeS2M(Fcall *f)
 		break;
 
 	case Tattach:
-		n += BIT32SZ;
-		n += BIT32SZ;
+		n += BIT32SZ; /* fid */
+		n += BIT32SZ; /* afid */
 		n += stringsz(f->uname);
 		n += stringsz(f->aname);
+		n += BIT32SZ; /* n_uname */
 		break;
 
 
@@ -148,6 +149,7 @@ sizeS2M(Fcall *f)
 */
 	case Rerror:
 		n += stringsz(f->ename);
+		n += BIT32SZ; /* m_uname */
 		break;
 
 	case Rflush:
@@ -258,6 +260,8 @@ convS2M(Fcall *f, uchar *ap, uint nap)
 		p += BIT32SZ;
 		p  = pstring(p, f->uname);
 		p  = pstring(p, f->aname);
+		PBIT32(p, f->n_uname);
+		p += BIT32SZ;
 		break;
 
 	case Tattach:
@@ -267,6 +271,8 @@ convS2M(Fcall *f, uchar *ap, uint nap)
 		p += BIT32SZ;
 		p  = pstring(p, f->uname);
 		p  = pstring(p, f->aname);
+		PBIT32(p, f->n_uname);
+		p += BIT32SZ;
 		break;
 
 	case Twalk:
@@ -360,6 +366,8 @@ convS2M(Fcall *f, uchar *ap, uint nap)
 
 	case Rerror:
 		p = pstring(p, f->ename);
+		PBIT32(p, f->n_uname);
+		p += BIT32SZ;
 		break;
 
 	case Rflush:

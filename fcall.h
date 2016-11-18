@@ -26,6 +26,7 @@ struct	Fcall
 	u32int	perm;		/* Tcreate */ 
 	char	*name;		/* Tcreate */
 	uchar	mode;		/* Tcreate, Topen */
+	char	*extension;	/* Tcreate, twstat */
 
 	u32int	newfid;		/* Twalk */
 	ushort	nwname;		/* Twalk */

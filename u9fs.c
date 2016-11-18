@@ -106,7 +106,7 @@ void	freefid(Fid*);
 int	userchange(User*, char**);
 int	userwalk(User*, char**, char*, Qid*, char**);
 int	useropen(Fid*, int, char**);
-int	usercreate(Fid*, char*, int, long, char**);
+int	usercreate(Fid*, char*, int, int, int, long, char**);
 int	userremove(Fid*, char**);
 int	userperm(User*, char*, int, int);
 int	useringroup(User*, User*);
@@ -222,7 +222,7 @@ fprint(2, "New length is %d\n", len);
 
 fprint(2, "Converting...\n");
 	if(convM2S(rxbuf, len+BIT32SZ, fc) != len+BIT32SZ)
-		sysfatal("badly sized message type %d", rxbuf[0]);
+		sysfatal("getfcallnew:  badly sized message type %d", rxbuf[0]);
 fprint(2, "Conversion completed...\n");
 }
 
@@ -250,7 +250,7 @@ fprint(2, "getfcallold entry\n");
 	len += n;
 
 	if(convM2Sold(rxbuf, len, fc) != len)
-		sysfatal("badly sized message type %d", rxbuf[0]);
+		sysfatal("convM2Sold: badly sized message type %d", rxbuf[0]);
 }
 
 void
@@ -602,32 +602,40 @@ fprint(2, "rcreate entry\n");
 	char *e;
 	Fid *fid;
 
+fprint(2, "Checking oldfid...\n");
 	if((fid = oldfid(rx->fid, &e)) == nil){
 		seterror(tx, e);
 		return;
 	}
 
+fprint(2, "Checking mode...\n");
 	if(fid->omode != -1){
 		seterror(tx, Ebadusefid);
 		return;
 	}
 
+fprint(2, "Checking fidstat...\n");
 	if(fidstat(fid, &e) < 0){
 		seterror(tx, e);
 		return;
 	}
 
+fprint(2, "Checking ISDIR...\n");
 	if(!S_ISDIR(fid->st.st_mode)){
 		seterror(tx, Enotdir);
 		return;
 	}
 
-	if(usercreate(fid, rx->name, rx->mode, rx->perm, &e) < 0){
+fprint(2, "rcreate attempting to create file %s\n", rx->name);
+	if(usercreate(fid, rx->name, rx->n_uname, 65534, rx->mode, rx->perm, &e) < 0){
+fprint(2, "create failed %s\n", rx->name);
 		seterror(tx, e);
 		return;
 	}
 
+fprint(2, "rcreate attempting to stat file %s\n", rx->name);
 	if(fidstat(fid, &e) < 0){
+fprint(2, "stat failed %s\n", rx->name);
 		seterror(tx, e);
 		return;
 	}
@@ -929,6 +937,7 @@ fprint(2, "rread entry\n");
 		fid->diroffset += tx->count;
 	}else{
 		if((n = pread(fid->fd, tx->data, rx->count, rx->offset)) < 0){
+fprint(2, "strerror general 1\n");
 			seterror(tx, strerror(errno));
 			return;
 		}
@@ -968,6 +977,7 @@ fprint(2, "rwrite entry\n");
 	}
 
 	if((n = pwrite(fid->fd, rx->data, rx->count, rx->offset)) < 0){
+fprint(2, "strerror general 2\n");
 		seterror(tx, strerror(errno));
 		return;
 	}
@@ -1119,6 +1129,7 @@ fprint(2, "rwstat entry\n");
 	if((u32int)d.mode != (u32int)~0 && chmod(opath, unixmode(&d)) < 0){
 		if(chatty9p)
 			fprint(2, "chmod(%s, 0%luo) failed\n", opath, unixmode(&d));
+fprint(2, "strerror general 3\n");
 		seterror(tx, strerror(errno));
 		return;
 	}
@@ -1131,6 +1142,7 @@ fprint(2, "rwstat entry\n");
 		if(utime(opath, &t) < 0){
 			if(chatty9p)
 				fprint(2, "utime(%s) failed\n", opath);
+fprint(2, "strerror general 4\n");
 			seterror(tx, strerror(errno));
 			return;
 		}
@@ -1140,6 +1152,7 @@ fprint(2, "rwstat entry\n");
 		if(chown(opath, (uid_t)-1, gid) < 0){
 			if(chatty9p)
 				fprint(2, "chgrp(%s, %d) failed\n", opath, gid);
+fprint(2, "strerror general 5\n");
 			seterror(tx, strerror(errno));
 			return;
 		}
@@ -1159,6 +1172,7 @@ fprint(2, "rwstat entry\n");
 		if(strcmp(old, new) != 0 && rename(opath, npath) < 0){
 			if(chatty9p)
 				fprint(2, "rename(%s, %s) failed\n", old, new);
+fprint(2, "strerror general 6\n");
 			seterror(tx, strerror(errno));
 			free(new);
 			free(dir);
@@ -1173,6 +1187,7 @@ fprint(2, "rwstat entry\n");
 
 	if((u64int)d.length != (u64int)~0 && truncate(opath, d.length) < 0){
 		fprint(2, "truncate(%s, %lld) failed\n", opath, d.length);
+fprint(2, "strerror general 7\n");
 		seterror(tx, strerror(errno));
 		return;
 	}
@@ -1205,8 +1220,10 @@ int
 useringroup(User *u, User *g)
 {
 	int i;
-fprint(2, "useringroup entry\n");
+fprint(2, "useringroup entry.  u->defaultgid = %d, g->id = %d\n", u->defaultgid, g->id);
 
+        return 1;
+#ifdef NO
 	for(i=0; i<g->nmem; i++)
 		if(strcmp(g->mem[i], u->name) == 0)
 			return 1;
@@ -1218,6 +1235,7 @@ fprint(2, "useringroup entry\n");
 	if(u->defaultgid == g->id)
 		return 1;
 	return 0;
+#endif
 }
 
 User*
@@ -1533,8 +1551,8 @@ int
 userchange(User *u, char **ep)
 {
 fprint(2, "userchange entry\n");
-	if(defaultuser)
-		return 0;
+	// if(defaultuser)
+		// return 0;
 
 fprint(2, "userchange checkpoint 1\n");
 	if(setreuid(0, 0) < 0){
@@ -1688,17 +1706,22 @@ userwalk(User *u, char **path, char *elem, Qid *qid, char **ep)
 	char *npath, *rpath;
 	struct stat st;
 
-fprint(2, "userwalk entry\n");
+fprint(2, "userwalk entry for %s\n", *path);
 	npath = estrpath(*path, elem, 1);
+fprint(2, "userwalk path changed by estrpath to %s\n", npath);
 	rpath = rootpath(npath);
+fprint(2, "userwalk looking for rootpath %s\n", rpath);
 	if(stat(rpath, &st) < 0){
+fprint(2, "strerror general 9\n");
 		free(npath);
 		*ep = strerror(errno);
 		return -1;
 	}
+fprint(2, "userwalk got path\n");
 	*qid = stat2qid(&st);
 	free(*path);
 	*path = npath;
+fprint(2, "userwalk exit\n");
 	return 0;
 }
 
@@ -1713,6 +1736,7 @@ fprint(2, "useropen entry\n");
 	 * Check this anyway, to try to head off problems later.
 	 */
 	if((omode&ORCLOSE) && userperm(fid->u, fid->path, Tdotdot, W_OK) < 0){
+fprint(2, "Setting permission denied failure from useropen\n");
 		*ep = Eperm;
 		return -1;
 	}
@@ -1751,6 +1775,7 @@ fprint(2, "useropen entry\n");
 		}
 		rpath = rootpath(fid->path);
 		if((fid->dir = opendir(rpath)) == nil){
+fprint(2, "strerror general 10\n");
 			*ep = strerror(errno);
 			return -1;
 		}
@@ -1767,6 +1792,7 @@ fprint(2, "useropen entry\n");
 		 */
 		rpath = rootpath(fid->path);
 		if((fid->fd = open(rpath, o)) < 0){
+fprint(2, "strerror general 11\n");
 			*ep = strerror(errno);
 			return -1;
 		}
@@ -1776,7 +1802,7 @@ fprint(2, "useropen entry\n");
 }
 
 int
-usercreate(Fid *fid, char *elem, int omode, long perm, char **ep)
+usercreate(Fid *fid, char *elem, int uid, int gid, int omode, long perm, char **ep)
 {
 fprint(2, "usercreate entry\n");
 	int o, m;
@@ -1786,10 +1812,12 @@ fprint(2, "usercreate entry\n");
 
 	rpath = rootpath(fid->path);
 	if(stat(rpath, &parent) < 0){
+fprint(2, "strerror general 12\n");
 		*ep = strerror(errno);
 		return -1;
 	}
 
+#ifdef NO
 	/*
 	 * Change group so that created file has expected group
 	 * by Plan 9 semantics.  If that fails, might as well go
@@ -1798,6 +1826,7 @@ fprint(2, "usercreate entry\n");
 	if(groupchange(fid->u, gid2user(parent.st_gid), ep) < 0
 	&& groupchange(fid->u, gid2user(fid->u->defaultgid), ep) < 0)
 		return -1;
+#endif
 
 	m = (perm & DMDIR) ? 0777 : 0666;
 	perm = perm & (~m | (fid->st.st_mode & m));
@@ -1805,6 +1834,7 @@ fprint(2, "usercreate entry\n");
 	npath = estrpath(rpath, elem, 1);
 	if(perm & DMDIR){
 		if((omode&~ORCLOSE) != OREAD){
+fprint(2, "Setting permission denied failure from usercreate\n");
 			*ep = Eperm;
 			free(npath);
 			return -1;
@@ -1816,11 +1846,13 @@ fprint(2, "usercreate entry\n");
 		}
 		/* race */
 		if(mkdir(npath, perm&0777) < 0){
+fprint(2, "Setting permission denied failure from usercreate mkdir\n");
 			*ep = strerror(errno);
 			free(npath);
 			return -1;
 		}
 		if((fid->dir = opendir(npath)) == nil){
+fprint(2, "Setting permission denied failure from usercreate mkdir 2\n");
 			*ep = strerror(errno);
 			remove(npath);		/* race */
 			free(npath);
@@ -1857,6 +1889,14 @@ fprint(2, "usercreate entry\n");
 	/*
 	 * Change ownership if a default user is specified.
 	 */
+fprint(2, "chown changing file %s to owner %d\n", npath, uid);
+        if (chown(npath, uid, -1) < 0)
+        {
+            fprint(2, "chown after create on %s failed\n", npath);
+            return -1;
+        }
+
+#ifdef NO
 	if(defaultuser)
 	if((u = uname2user(defaultuser)) == nil
 	|| chown(npath, u->id, -1) < 0){
@@ -1873,6 +1913,7 @@ fprint(2, "usercreate entry\n");
 		}
 		return -1;
 	}
+#endif
 
 	opath = fid->path;
 	fid->path = estrpath(opath, elem, 1);
@@ -1903,6 +1944,7 @@ fprint(2, "userremove entry\n");
 
 	rpath = rootpath(fid->path);
 	if(remove(rpath) < 0){
+fprint(2, "strerror general A\n");
 		*ep = strerror(errno);
 		return -1;
 	}

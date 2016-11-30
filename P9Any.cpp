@@ -317,7 +317,7 @@ Plan9::Security::P9Any::MakeReadCall(Fcall *rx, Fcall *tx)
 	switch (sp->state) {
 	case HaveProtos:
 		readstr(rx, tx, haveprotosmsg, strlen(haveprotosmsg) + 1);
-		if (rx->offset + tx->count == strlen(haveprotosmsg) + 1)
+		if (rx->offset + tx->count == (uint)strlen(haveprotosmsg) + 1)
 			sp->state = NeedProto;
 		return NULL;
 	case HaveTreq:

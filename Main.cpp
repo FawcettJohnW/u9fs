@@ -43,7 +43,7 @@ int
 main(int argc, char **argv)
 {
     char *authtype;
-    int i;
+    uint i;
     int fd;
     int logflag;
     extern char *optarg;

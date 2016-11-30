@@ -31,7 +31,7 @@ long Plan9::Common::getseed(void)
 
 void Plan9::Common::randombytes(uchar *r, uint nr)
 {
-	int i;
+	uint i;
 	ulong l;
 
 	if(!Plan9::Common::seeded){

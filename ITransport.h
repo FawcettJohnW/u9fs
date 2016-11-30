@@ -16,8 +16,8 @@ namespace Plan9
                 {};
                 virtual ~ITransport( void ) {};
 
-                virtual void getfcallnew(int fd, Plan9::Fcalls::Fcall *fc, int have) = 0;
-                virtual void getfcallold(int fd, Plan9::Fcalls::Fcall *fc, int have) = 0;
+                virtual void getfcallnew(int fd, Plan9::Fcalls::Fcall *fc, uint have) = 0;
+                virtual void getfcallold(int fd, Plan9::Fcalls::Fcall *fc, uint have) = 0;
                 virtual void putfcallnew(int fd, Plan9::Fcalls::Fcall *tx) = 0;
                 virtual void putfcallold(int fd, Plan9::Fcalls::Fcall *tx) = 0;
                 virtual void getfcall(int *fd, Plan9::Fcalls::Fcall *fc) = 0;

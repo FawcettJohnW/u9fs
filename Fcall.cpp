@@ -249,7 +249,8 @@ Plan9::Fcalls::convD2M(Dir *d, uchar *buf, uint nbuf)
 {
 	uchar *p, *ebuf;
 	char *sv[5];
-	int i, ns, nsv[5], ss;
+	int i, ns, nsv[5];
+	uint ss;
 
 	if(nbuf < BIT16SZ)
 		return 0;

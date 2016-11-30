@@ -3,7 +3,7 @@
 using namespace Plan9;
 using namespace Plan9::Common;
 
-P9UserMgmt::P9User* 
+P9UserMgmt::P9User*
 P9UserMgmt::P9Users::adduser(const struct passwd *p)
 {
 	P9UserMgmt::P9User *u(new P9UserMgmt::P9User());
@@ -16,7 +16,7 @@ P9UserMgmt::P9Users::adduser(const struct passwd *p)
 	return u;
 }
 
-int 
+int
 P9UserMgmt::P9Users::useringroup(P9UserMgmt::P9User *u, P9UserMgmt::P9User *g)
 {
 	int i;
@@ -74,7 +74,7 @@ P9UserMgmt::P9Users::uname2user(const char *name)
 }
 
 P9UserMgmt::P9User*
-P9UserMgmt::P9Users::uid2user(int id)
+P9UserMgmt::P9Users::uid2user(uid_t id)
 {
 	P9UserMgmt::P9User *u;
 	struct passwd *p;
@@ -106,7 +106,7 @@ Plan9::P9UserMgmt::P9Users::gname2user(char *name)
 }
 
 P9UserMgmt::P9User*
-P9UserMgmt::P9Users::gid2user(int id)
+P9UserMgmt::P9Users::gid2user(gid_t id)
 {
 	P9UserMgmt::P9User *u;
 	struct group *g;
@@ -119,4 +119,3 @@ P9UserMgmt::P9Users::gid2user(int id)
 		return NULL;
 	return addgroup(g);
 }
-

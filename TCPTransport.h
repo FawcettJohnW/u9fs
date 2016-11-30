@@ -21,8 +21,8 @@ namespace Plan9
                 TCPTransport( int Port );
                 ~TCPTransport( void );
 
-                void getfcallnew(int fd, Plan9::Fcalls::Fcall *fc, int have);
-                void getfcallold(int fd, Plan9::Fcalls::Fcall *fc, int have);
+                void getfcallnew(int fd, Plan9::Fcalls::Fcall *fc, uint have);
+                void getfcallold(int fd, Plan9::Fcalls::Fcall *fc, uint have);
                 void putfcallnew(int fd, Plan9::Fcalls::Fcall *tx);
                 void putfcallold(int fd, Plan9::Fcalls::Fcall *tx);
                 void getfcall(int *fd, Plan9::Fcalls::Fcall *fc);

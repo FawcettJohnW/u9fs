@@ -7,7 +7,7 @@
 #include <grp.h>
 
 namespace Plan9
-{    
+{
     namespace P9UserMgmt
     {
         class P9User
@@ -18,7 +18,7 @@ namespace Plan9
                 {};
                 virtual ~P9User( void ) {};
 
-                int id;
+                uid_t id;
                 gid_t defaultgid;
                 char *name;
                 char **mem;     /* group members */
@@ -39,9 +39,9 @@ namespace Plan9
                 int useringroup(P9User *u, P9User *g);
                 P9User* addgroup(struct group *g);
                 P9User* uname2user(const char *name);
-                P9User* uid2user(int id);
+                P9User* uid2user(uid_t id);
                 P9User* gname2user(char *name);
-                P9User* gid2user(int id);
+                P9User* gid2user(gid_t id);
 
                 inline P9User *GetUtabEntry(int index)
                 {

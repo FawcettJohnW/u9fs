@@ -24,10 +24,10 @@ namespace Plan9
                 {};
 
                 virtual ~PosixUserOps( void );
-                
+
 
                 int userchange(P9User*u, char **ep);
-                
+
                 /*
                  * We do our own checking here, then switch to root temporarily
                  * to set our gid.  In a perfect world, you'd be allowed to set your
@@ -39,16 +39,16 @@ namespace Plan9
                  * change your own group without our help.
                  */
                 int groupchange(P9User*u, P9User*g, char **ep);
-                
+
                 /*
-                 * An attempt to enforce permissions by looking at the 
+                 * An attempt to enforce permissions by looking at the
                  * file system.  Separation of checking permission and
-                 * actually performing the action is a terrible idea, of 
+                 * actually performing the action is a terrible idea, of
                  * course, so we use setreuid for most of the permission
                  * enforcement.  This is here only so we can give errors
                  * on open(ORCLOSE) in some cases.
                  */
-                int userperm(P9User*u, char *path, int type, int need);
+                int userperm(P9User*u, char *path, int type, uint need);
                 int userwalk(P9User*u, char **path, char *elem, Qid *qid, char **ep);
                 int useropen(Fid *fid, int omode, char **ep);
                 int usercreate(Plan9::FidMgr::Fid *fid, char *elem, int uid, int gid, int omode, long perm, char **ep);

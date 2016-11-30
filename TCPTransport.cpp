@@ -17,7 +17,7 @@ using namespace Plan9::Transport;
 
 struct TCPThreadWrapper {
     char * msg;
-    Plan9::Transport::TCPTransport *theObject; 
+    Plan9::Transport::TCPTransport *theObject;
 
     TCPThreadWrapper( char* m, Plan9::Transport::TCPTransport* f ) : msg(m), theObject(f) {}
 };
@@ -60,7 +60,7 @@ void *TCPTransport::TCPAcceptor( void *threadArgs )
         server_address.sin_family = AF_INET;
         server_address.sin_addr.s_addr = INADDR_ANY;
         server_address.sin_port = htons(m_Port);
-        
+
         if (0 < bind(m_serverSock, (struct sockaddr *)&server_address, sizeof (server_address)))
         {
             tcpSysFatal(m_serverSock, "TCP Transport:  Could not bind to port %d", m_Port);
@@ -81,7 +81,7 @@ void *TCPTransport::TCPAcceptor( void *threadArgs )
             timeOut.tv_sec = 0;
             timeOut.tv_usec = 0;
 
-            acceptSock = accept(m_serverSock, NULL, NULL); 
+            acceptSock = accept(m_serverSock, NULL, NULL);
             if (acceptSock > 0)
             {
                 AddNewListener(acceptSock);
@@ -106,7 +106,7 @@ bool isInvalidSocket(const int sock)
 void *TCPTransport::TCPListener( void *threadArgs )
 {
     // All this does is listen on all the sockets, read the messages in, and drop them into a queue.
-    
+
     // The user will send a signal to kill the service, which will not be caught, and break this loop
     while (1)
     {
@@ -117,7 +117,7 @@ void *TCPTransport::TCPListener( void *threadArgs )
 
         memset(allFds, 0, sizeof(allFds));
         bool invalidatedOne = false;
-        int numFds = 0;
+        size_t numFds = 0;
         pthread_mutex_lock(&m_queueLock);
         for (size_t i = 0; i < m_socketList.size(); i++)
         {
@@ -209,7 +209,7 @@ void *TCPTransport::TCPListener( void *threadArgs )
                         }
                     }
                 }
-    
+
                 m_messageQueue.push(fcm);
 
                 sem_post(&m_semaphore);
@@ -218,8 +218,8 @@ void *TCPTransport::TCPListener( void *threadArgs )
             if (invalidatedOne)
             {
                 int invalidSocket = -1;
-                m_socketList.erase(std::remove_if(m_socketList.begin(), m_socketList.end(), 
-                                                  isInvalidSocket), 
+                m_socketList.erase(std::remove_if(m_socketList.begin(), m_socketList.end(),
+                                                  isInvalidSocket),
                                                   m_socketList.end());
             }
         }
@@ -251,7 +251,7 @@ TCPTransport::TCPTransport(int Port) : ITransport(Port)
         tcpSysFatal(-1, "Cannot create acceptor thread -- Error is %d (%s)\n", errno, strerror(errno));
         exit(-1);
     }
- 
+
     // Start the listener
     pthread_attr_t ListenerAttr;
     pthread_attr_init(&ListenerAttr);
@@ -274,10 +274,10 @@ TCPTransport::~TCPTransport( void )
 }
 
 void
-Plan9::Transport::TCPTransport::getfcallnew(int fd, Fcall *fc, int have)
+Plan9::Transport::TCPTransport::getfcallnew(int fd, Fcall *fc, uint have)
 {
 Logging::fprint(2, "getfcallnew entry\n");
-    int len;
+    uint len;
 
     if(have > BIT32SZ)
     {
@@ -320,10 +320,10 @@ Logging::fprint(2, "Conversion completed...\n");
 }
 
 void
-Plan9::Transport::TCPTransport::getfcallold(int fd, Fcall *fc, int have)
+Plan9::Transport::TCPTransport::getfcallold(int fd, Fcall *fc, uint have)
 {
 Logging::fprint(2, "getfcallold entry\n");
-    int len, n;
+    uint len, n;
 
     if(have > 3)
     {

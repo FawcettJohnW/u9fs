@@ -127,10 +127,12 @@ Plan9::FileSystem::PosixUserOps::groupchange(P9User *u, P9User *g, char **ep)
  * on open(ORCLOSE) in some cases.
  */
 int
-Plan9::FileSystem::PosixUserOps::userperm(P9User *u, char *path, int type, int need)
+Plan9::FileSystem::PosixUserOps::userperm(P9User *u, char *path, int type, uint need)
 {
+
 	char *p, *q, *rpath;
-	int i, have;
+	int i;
+	uint have;
 	struct stat st;
 	P9User *g;
 

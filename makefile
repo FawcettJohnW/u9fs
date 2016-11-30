@@ -28,9 +28,9 @@ OFILES=\
 	Logging.o \
 	P9Common.o \
 	PosixUserOps.o \
-        Conv.o \
- 	Fcall.o \
- 	Users.o \
+	Conv.o \
+	Fcall.o \
+	Users.o \
 	P9Any.o \
 	TCPTransport.o \
 	Server.o \

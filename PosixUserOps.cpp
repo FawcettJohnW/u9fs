@@ -1,5 +1,7 @@
 #include "PosixUserOps.h"
 
+#include <stdio.h>
+
 static char	Enotingroup[]     = "not a member of proposed group";
 static char     Eperm[]           = "permission denied";
 static char     Eexist[]          = "file or directory already exists";

@@ -113,7 +113,7 @@ void *TCPTransport::TCPListener( void *threadArgs )
 
         pollfd *allFds = new pollfd[m_socketList.size()];
 
-        memset(allFds, 0, sizeof(allFds));
+        memset(allFds, 0, sizeof(*allFds));
         bool invalidatedOne = false;
         size_t numFds = 0;
         pthread_mutex_lock(&m_queueLock);

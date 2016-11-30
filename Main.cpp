@@ -48,7 +48,6 @@ main(int argc, char **argv)
     int logflag;
     extern char *optarg;
     int port=-1;
-    long tempPort; // Ignored
 
     logfile = defaultLogName;
 
@@ -120,7 +119,7 @@ main(int argc, char **argv)
         msize = strtol(EARGF(usage()), 0, 0);
         break;
     case 'p':
-        tempPort = strtol(EARGF(usage()), 0, 0);
+        EARGF(usage());
         break;
     case 'n':
         network = 0;

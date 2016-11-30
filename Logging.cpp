@@ -94,14 +94,14 @@ Logging::seprint(char *buf, char *e, const char *fmt, ...)
 char*
 Logging::smprint(const char *fmt, ...)
 {
-	char buf[SIZE], *out;
+	char buf[SIZE];
 	va_list arg, temp;
 	int scol;
 
 	scol = printcol;
 	va_start(arg, fmt);
 	va_copy(temp, arg);
-	out = doprint(buf, buf+sizeof(buf), fmt, &temp);
+	doprint(buf, buf+sizeof(buf), fmt, &temp);
 	va_end(temp);
 	va_end(arg);
 	printcol = scol;

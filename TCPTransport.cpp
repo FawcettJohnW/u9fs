@@ -76,10 +76,6 @@ void *TCPTransport::TCPAcceptor( void *threadArgs )
             fd_set fdSet;
             FD_ZERO(&fdSet);
             FD_SET(m_serverSock, &fdSet);
-     
-            struct timeval timeOut;
-            timeOut.tv_sec = 0;
-            timeOut.tv_usec = 0;
 
             acceptSock = accept(m_serverSock, NULL, NULL);
             if (acceptSock > 0)

@@ -1,0 +1,10 @@
+service u9fs
+{
+	socket_type     = stream
+	protocol        = tcp
+	wait            = no
+	user            = root
+	server          = /home/jfawcett/p9/u9fs/u9fs/cpp2/u9fs
+	server_args     = -a none -D -z 
+	port	        = 564
+}

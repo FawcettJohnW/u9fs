@@ -92,6 +92,8 @@ void *TCPTransport::TCPAcceptor( void *threadArgs )
     }
 
     Logging::fprint(2, "TCPAcceptor no longer accepting connections -- connector thread terminating...\n");
+
+    return NULL;
 }
 
 bool isInvalidSocket(const int sock)
@@ -221,6 +223,8 @@ void *TCPTransport::TCPListener( void *threadArgs )
         }
         pthread_mutex_unlock(&m_queueLock);
     }
+
+    return NULL;
 }
 
 // Constructor

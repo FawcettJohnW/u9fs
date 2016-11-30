@@ -87,13 +87,13 @@ Logging::fprint(2, "erealloc entry\n");
 }
 
 char*
-Plan9::Common::estrdup(char *p)
+Plan9::Common::estrdup(const char *p)
 {
 Logging::fprint(2, "strdup entry\n");
-	p = strdup(p);
-	if(p == 0)
-		Logging::sysfatal("strdup(%.20s) fails", p);
-	return p;
+	char* c = strdup(p);
+	if(c == 0)
+		Logging::sysfatal("strdup(%.20s) fails", c);
+	return c;
 }
 
 char *

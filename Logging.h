@@ -19,7 +19,7 @@ namespace Plan9
                 static int     fprint(int, const char*, ...);
                 static void    sysfatal(const char*, ...);
                 static int     tokenize(char*, char**, int);
-                static int     getfields(char*, char**, int, int, char*);
+                static int     getfields(char*, char**, int, int, const char*);
                 static char*   strecpy(char*, char*, char*);
 
             private:
@@ -27,7 +27,7 @@ namespace Plan9
                 static int     chartorune(Rune*, char*);
                 static int     runelen(long);
                 static int     utflen(char*);
-                static char*   utfrune(char*, long);
+                static const char* utfrune(const char*, long);
         }; // Class p9Logging
     } // namespace Logging
 } // namespace Plan9

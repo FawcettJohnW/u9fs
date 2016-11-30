@@ -18,23 +18,23 @@ namespace Plan9
             friend class IAuth;
 
             public:
-                P9Any(std::string name, Plan9::P9UserMgmt::P9Users* users, Plan9::FileSystem::IFileSystemUserOps* userOps, Plan9::Transport::ITransport* transport) 
+                P9Any(std::string name, Plan9::P9UserMgmt::P9Users* users, Plan9::FileSystem::IFileSystemUserOps* userOps, Plan9::Transport::ITransport* transport)
                    : IAuth(name, users, userOps, transport)
                 {
                     m_FidMgr = new Plan9::FidMgr::FidMgr(users, userOps);
                 };
-                ~P9Any() 
+                ~P9Any()
                 {
                     if (NULL != m_FidMgr)
                         delete m_FidMgr;
                 };
 
-                char *   MakeAuthCall(Fcall *rx, Fcall *tx);
-                char *   MakeAttachCall(Fcall *rx, Fcall *tx);
-                void     MakeInitCall(void);
-                char *   MakeReadCall(Fcall *rx, Fcall *tx);
-                char *   MakeWriteCall(Fcall *rx, Fcall *tx);
-                char *   MakeClunkCall(Fcall *rx, Fcall *tx);
+                const char * MakeAuthCall(Fcall *rx, Fcall *tx);
+                const char * MakeAttachCall(Fcall *rx, Fcall *tx);
+                void         MakeInitCall(void);
+                const char * MakeReadCall(Fcall *rx, Fcall *tx);
+                const char * MakeWriteCall(Fcall *rx, Fcall *tx);
+                const char * MakeClunkCall(Fcall *rx, Fcall *tx);
 
             private:
                 // Forward declarations -- see bleow

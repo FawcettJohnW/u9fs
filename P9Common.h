@@ -10,9 +10,9 @@
     \file        plan9common.h
 
     \brief       Common declarations, structs, and other data for u9fs-d
-    
-    \date        11-17-16 
-    
+
+    \date        11-17-16
+
 */
 /*----------------------------------------------------------------------------*/
 #ifdef __APPLE__
@@ -167,7 +167,7 @@ namespace Plan9
                 Tdot = 1,
                 Tdotdot
         };
-        
+
         enum {
                 P9P1,
                 P9P2000
@@ -182,12 +182,12 @@ namespace Plan9
          * string data, so we replicate that for our internal
          * string members.
          */
-        
+
         struct p9_str {
                 ushort len;
                 char *str;
         };
-        
+
         typedef
         struct Qid
         {
@@ -196,7 +196,7 @@ namespace Plan9
                 uchar   type;
 
                 Qid( void )
-                : path(NULL), vers(0), type(0)
+                : path(0), vers(0), type(0)
                 {}
         } Qid;
 
@@ -239,7 +239,7 @@ namespace Plan9
 
         void*   emalloc(size_t);
         void*   erealloc(void*, size_t);
-        char*   estrdup(char*);
+        char*   estrdup(const char*);
         char*   estrpath(char*, char*, int);
         int     okuser(char*);
 
@@ -253,5 +253,5 @@ namespace Plan9
 
     } // Namespace common
 } // Namespace Plan9
-    
+
 #endif // __P9COMMON_H_

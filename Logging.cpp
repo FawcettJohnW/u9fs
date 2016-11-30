@@ -139,7 +139,7 @@ Logging::strecpy(char *to, char *e, char *from)
 }
 
 int
-Logging::getfields(char *str, char **args, int max, int mflag, char *set)
+Logging::getfields(char *str, char **args, int max, int mflag, const char *set)
 {
 	Rune r;
 	int nr, intok, narg;
@@ -179,8 +179,8 @@ Logging::tokenize(char *str, char **args, int max)
 	return getfields(str, args, max, 1, " \t\n\r");
 }
 
-char*
-Logging::utfrune(char *s, long c)
+const char*
+Logging::utfrune(const char *s, long c)
 {
 	long c1;
 	Rune r;

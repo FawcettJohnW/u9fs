@@ -13,31 +13,30 @@ namespace Plan9
         class AuthNone : public IAuth
         {
             public:
-                AuthNone(std::string name, Plan9::P9UserMgmt::P9Users* users, Plan9::FileSystem::IFileSystemUserOps* userOps, Plan9::Transport::ITransport* transport) 
+                AuthNone(std::string name, Plan9::P9UserMgmt::P9Users* users, Plan9::FileSystem::IFileSystemUserOps* userOps, Plan9::Transport::ITransport* transport)
                       : IAuth(name, users, userOps, transport)
                 { }
                 virtual ~AuthNone( void ) {};
 
-                
-                char* MakeAuthCall(Fcall *rx, Fcall *tx)
+                const char * MakeAuthCall(Fcall *rx, Fcall *tx)
                 {
                         static char noauth[]="u9fs authnone: no authentication required";
-	                USED(rx);
-	                USED(tx);
-	                return noauth;
+                  USED(rx);
+                  USED(tx);
+                  return noauth;
                 };
-                
-                char* MakeAttachCall(Fcall *rx, Fcall *tx)
+
+                const char * MakeAttachCall(Fcall *rx, Fcall *tx)
                 {
-	                USED(rx);
-	                USED(tx);
-	                return NULL;
+                  USED(rx);
+                  USED(tx);
+                  return NULL;
                 };
                // These methods not implemented...
-               void     MakeInitCall(void) {};
-               char *   MakeReadCall(Fcall *rx, Fcall *tx) {return errStr;};
-               char *   MakeWriteCall(Fcall *rx, Fcall *tx) {return errStr;};
-               char *   MakeClunkCall(Fcall *rx, Fcall *tx) {return errStr;};
+               void         MakeInitCall(void) {};
+               const char * MakeReadCall(Fcall *rx, Fcall *tx) {return errStr;};
+               const char * MakeWriteCall(Fcall *rx, Fcall *tx) {return errStr;};
+               const char * MakeClunkCall(Fcall *rx, Fcall *tx) {return errStr;};
         }; // class AuthNone
     } // Namespace Security
 } // Namespace Plan9

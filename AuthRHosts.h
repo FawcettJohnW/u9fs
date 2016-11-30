@@ -17,7 +17,7 @@ namespace Plan9
             friend class IAuth;
 
             public:
-                RHostsAuth( std::string name, Plan9::P9UserMgmt::P9Users* users, Plan9::FileSystem::IFileSystemUserOps* userOps, Plan9::Transport::ITransport* transport ) 
+                RHostsAuth( std::string name, Plan9::P9UserMgmt::P9Users* users, Plan9::FileSystem::IFileSystemUserOps* userOps, Plan9::Transport::ITransport* transport )
                     : IAuth(name, users, userOps, transport)
                 { }
                 virtual ~RHostsAuth( void ) {};
@@ -30,22 +30,22 @@ namespace Plan9
                 * not such a great idea.  it's grandfathered.
                 */
 
-               char* MakeAuthCall(Fcall *rx, Fcall *tx)
+               const char* MakeAuthCall(Fcall *rx, Fcall *tx)
                {
                    static char noauth[]="u9fs rhostsauth: no authentication required";
 
                    USED(rx);
                    USED(tx);
-               
+
                    return noauth;
                }
-               
-               char* MakeAttachCall(Fcall *rx, Fcall *tx)
+
+               const char* MakeAttachCall(Fcall *rx, Fcall *tx)
                {
                    static char authfailed[]="u9fs: rhosts authentication failed";
 
                    USED(tx);
-               
+
                    if(ruserok(remotehostname, 0, rx->uname, rx->uname) < 0){
                        Logging::fprint(2, "ruserok(%s, %s) not okay\n", remotehostname, rx->uname);
                    return authfailed;
@@ -54,10 +54,10 @@ namespace Plan9
                }
 
                // These methods not implemented...
-               void     MakeInitCall(void) {};
-               char *   MakeReadCall(Fcall *rx, Fcall *tx) {return errStr;};
-               char *   MakeWriteCall(Fcall *rx, Fcall *tx) {return errStr;};
-               char *   MakeClunkCall(Fcall *rx, Fcall *tx) {return errStr;};
+               void         MakeInitCall(void) {};
+               const char * MakeReadCall(Fcall *rx, Fcall *tx) {return errStr;};
+               const char * MakeWriteCall(Fcall *rx, Fcall *tx) {return errStr;};
+               const char * MakeClunkCall(Fcall *rx, Fcall *tx) {return errStr;};
         }; // class RHostsAuth
     } // Namespace Security
 } // Namespace Plan9

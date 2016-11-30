@@ -246,7 +246,7 @@ Plan9::Security::P9Any::MakeInitCall(void)
 		Logging::sysfatal("out of memory");
 }
 
-char*
+const char*
 Plan9::Security::P9Any::MakeAuthCall(Fcall *rx, Fcall *tx)
 {
 	AuthSession *sp;
@@ -270,7 +270,7 @@ Plan9::Security::P9Any::MakeAuthCall(Fcall *rx, Fcall *tx)
 	return NULL;
 }
 
-char *
+const char *
 Plan9::Security::P9Any::MakeAttachCall(Fcall *rx, Fcall *tx)
 {
 	AuthSession *sp;
@@ -302,7 +302,7 @@ Plan9::Security::P9Any::readstr(Fcall *rx, Fcall *tx, char *s, int len)
 	return tx->count;
 }
 
-char *
+const char *
 Plan9::Security::P9Any::MakeReadCall(Fcall *rx, Fcall *tx)
 {
 	AuthSession *sp;
@@ -346,7 +346,7 @@ Plan9::Security::P9Any::MakeReadCall(Fcall *rx, Fcall *tx)
 	}
 }
 
-char *
+const char *
 Plan9::Security::P9Any::MakeWriteCall(Fcall *rx, Fcall *tx)
 {
 	AuthSession *sp;
@@ -425,7 +425,7 @@ Plan9::Security::P9Any::safefree(char *p)
 	}
 }
 
-char *
+const char *
 Plan9::Security::P9Any::MakeClunkCall(Fcall *rx, Fcall *tx)
 {
 	Fid *f;

@@ -36,19 +36,19 @@ namespace Plan9
 
                 virtual ~IAuth() {};
 
-                virtual char* MakeAuthCall(Fcall*, Fcall *) = 0;
-                virtual char* MakeAttachCall(Fcall*, Fcall*) = 0;
-                virtual void  MakeInitCall(void) = 0;
-                virtual char* MakeReadCall(Fcall*, Fcall*) = 0;
-                virtual char* MakeWriteCall(Fcall*, Fcall*) = 0;
-                virtual char* MakeClunkCall(Fcall*, Fcall*) = 0;
+                virtual const char * MakeAuthCall(Fcall*, Fcall *) = 0;
+                virtual const char * MakeAttachCall(Fcall*, Fcall*) = 0;
+                virtual void         MakeInitCall(void) = 0;
+                virtual const char * MakeReadCall(Fcall*, Fcall*) = 0;
+                virtual const char * MakeWriteCall(Fcall*, Fcall*) = 0;
+                virtual const char * MakeClunkCall(Fcall*, Fcall*) = 0;
 
                 const char *GetName( void )
                 {
                     return m_name.c_str();
                 }
 
-                inline void safecpy(char *to, char *from, int tolen)
+                inline void safecpy(char *to, const char *from, int tolen)
                 {
                         int fromlen;
                         memset(to, 0, tolen);

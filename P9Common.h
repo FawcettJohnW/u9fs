@@ -5,6 +5,8 @@
 #include <iostream>
 #include <ostream>
 
+#pragma GCC diagnostic ignored "-Wunused-variable"
+
 /*--------------------------------------------------------------------------------*/
 /**
     \file        plan9common.h

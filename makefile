@@ -16,7 +16,7 @@
 #
 CC=g++
 # CFLAGS=-O -I.
-CFLAGS=-g -I.
+CFLAGS=-g -I. -Wall
 LD=g++
 LDFLAGS= -g -lstdc++ -lpthread
 LDTAIL=

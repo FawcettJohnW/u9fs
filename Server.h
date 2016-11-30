@@ -53,7 +53,7 @@ namespace Plan9
         static char	Edirchange[] =	"wstat can't convert between files and directories";
         static char	Efidactive[] =	"fid already in use";
         static char	Enotdir[] =	"not a directory";
-        static char	Enotowner[] = 	"only owner can change group in wstat";
+        static char	Enotowner[] =   "only owner can change group in wstat";
         static char	Especial0[] =	"already attached without access to special files";
         static char	Especial1[] =	"already attached with access to special files";
         static char	Especial[] =	"no access to special file";
@@ -61,7 +61,7 @@ namespace Plan9
         static char	Eunknowngroup[] = "unknown group";
         static char	Eunknownuser[] = "unknown user";
         static char	Ewstatbuffer[] = "bogus wstat buffer";
-                
+
         class P9Server
         {
             public:
@@ -71,7 +71,7 @@ namespace Plan9
                     m_FidMgr = new Plan9::FidMgr::FidMgr(users, userOps);
                 };
                 virtual ~P9Server( void ) {};
-                
+
                 void	rversion(Fcall*, Fcall*);
                 void	rauth(Fcall*, Fcall*);
                 void	rattach(Fcall*, Fcall*);
@@ -87,19 +87,14 @@ namespace Plan9
                 void	rwstat(Fcall*, Fcall*);
                 void	rclwalk(Fcall*, Fcall*);
                 void	rremove(Fcall*, Fcall*);
-                
-                Plan9::P9UserMgmt::P9Users *m_P9Users;
-                // User*	uname2user(char*);
-                // User*	gname2user(char*);
-                // User*	uid2user(int);
-                // User*	gid2user(int);
-                
-                Plan9::FidMgr::FidMgr *m_FidMgr;
-                // Fid*	newfid(int, char**);
-                // Fid*	oldfidex(int, int, char**);
-                // Fid*	oldfid(int, char**);
-                // void	freefid(Fid*);
-                
+
+                Plan9::Transport::ITransport *m_Transport;
+                // void getfcallnew(int fd, Fcall *fc, int have)
+                // void getfcallold(int fd, Fcall *fc, int have)
+                // void putfcallnew(int wfd, Fcall *tx)
+                // void putfcallold(int wfd, Fcall *tx)
+                // void getfcall(int fd, Fcall *fc)
+
                 Plan9::FileSystem::IFileSystemUserOps *m_FileSystemUserOps;
                 // int	userchange(User*, char**);
                 // int	userwalk(User*, char**, char*, Qid*, char**);
@@ -113,26 +108,32 @@ namespace Plan9
                 // Qid	stat2qid(struct stat*);
                 // char* rootpath(char *path)
 
-                Plan9::Transport::ITransport *m_Transport;
-                // void getfcallnew(int fd, Fcall *fc, int have)
-                // void getfcallold(int fd, Fcall *fc, int have)
-                // void putfcallnew(int wfd, Fcall *tx)
-                // void putfcallold(int wfd, Fcall *tx)
-                // void getfcall(int fd, Fcall *fc)
+                Plan9::P9UserMgmt::P9Users *m_P9Users;
+                // User*	uname2user(char*);
+                // User*	gname2user(char*);
+                // User*	uid2user(int);
+                // User*	gid2user(int);
+
+                Plan9::FidMgr::FidMgr *m_FidMgr;
+                // Fid*	newfid(int, char**);
+                // Fid*	oldfidex(int, int, char**);
+                // Fid*	oldfid(int, char**);
+                // void	freefid(Fid*);
+
                 void seterror(Fcall *f, char *error);
 
                 int	connected;
                 int	devallowed;
                 int	authed;
-                
+
                 IAuth *auth;
-                
+
                 void serve( void );
                 ulong plan9mode(struct stat *st);
                 int isowner(P9User *u, Fid *f);
-                
+
             private:
-                /* 
+                /*
                  * this is for chmod, so don't worry about S_IFDIR
                  */
                 mode_t unixmode(Dir *d);

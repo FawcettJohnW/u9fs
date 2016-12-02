@@ -16,7 +16,7 @@
 #
 CC=g++
 # CFLAGS=-O -I.
-CFLAGS=-g -I. -Wall
+CFLAGS=-g -I. -Wall -Wno-missing-braces
 LD=g++
 LDFLAGS= -g -lstdc++ -lpthread
 LDTAIL=
